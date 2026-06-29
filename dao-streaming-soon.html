@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>DAO Starting Soon</title>
+
+  <style>
+    :root {
+      --cyan: #10DDF2;
+      --green: #20F29A;
+      --bg-url: url("https://raw.githubusercontent.com/adamdao-tech/dao-stream-assets/main/scenes/starting-soon-bg.png");
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html,
+    body {
+      width: 100%;
+      height: 100%;
+      margin: 0;
+      overflow: hidden;
+      background: #020607;
+      font-family: "Arial Black", "Arial", sans-serif;
+    }
+
+    body {
+      position: relative;
+    }
+
+    .scene {
+      position: fixed;
+      inset: 0;
+      width: 100vw;
+      height: 100vh;
+      overflow: hidden;
+      background:
+        radial-gradient(circle at 50% 0%, rgba(16, 221, 242, 0.12), transparent 34%),
+        radial-gradient(circle at 12% 88%, rgba(16, 221, 242, 0.15), transparent 28%),
+        radial-gradient(circle at 88% 88%, rgba(32, 242, 154, 0.15), transparent 28%),
+        #020607;
+    }
+
+    .bg {
+      position: absolute;
+      inset: 0;
+      background-image: var(--bg-url);
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      transform: scale(1.012);
+      filter: brightness(0.98) contrast(1.08) saturate(1.05);
+      animation: bgBreath 9s ease-in-out infinite alternate;
+      z-index: 1;
+    }
+
+    .scanlines {
+      position: absolute;
+      inset: 0;
+      z-index: 5;
+      pointer-events: none;
+      opacity: 0.13;
+      background:
+        repeating-linear-gradient(
+          to bottom,
+          rgba(255, 255, 255, 0.035) 0px,
+          rgba(255, 255, 255, 0.035) 1px,
+          transparent 2px,
+          transparent 5px
+        );
+      mix-blend-mode: overlay;
+      animation: scanMove 7s linear infinite;
+    }
+
+    .neon-sweep {
+      position: absolute;
+      inset: -30%;
+      z-index: 4;
+      pointer-events: none;
+      background: linear-gradient(
+        115deg,
+        transparent 0%,
+        transparent 43%,
+        rgba(16, 221, 242, 0.16) 49%,
+        rgba(32, 242, 154, 0.14) 51%,
+        transparent 58%,
+        transparent 100%
+      );
+      transform: translateX(-45%);
+      mix-blend-mode: screen;
+      opacity: 0.7;
+      animation: neonSweep 9.5s ease-in-out infinite;
+    }
+
+    .glow-pulse {
+      position: absolute;
+      inset: 0;
+      z-index: 3;
+      pointer-events: none;
+      box-shadow:
+        inset 0 0 70px rgba(16, 221, 242, 0.20),
+        inset 0 0 110px rgba(32, 242, 154, 0.13);
+      opacity: 0.58;
+      animation: glowPulse 4.8s ease-in-out infinite alternate;
+    }
+
+    .steam {
+      position: absolute;
+      bottom: -14vh;
+      width: 56vw;
+      height: 55vh;
+      z-index: 6;
+      pointer-events: none;
+      opacity: 0.48;
+      filter: blur(18px);
+      mix-blend-mode: screen;
+    }
+
+    .steam.left {
+      left: -12vw;
+      background:
+        radial-gradient(circle at 22% 78%, rgba(16, 221, 242, 0.44), transparent 28%),
+        radial-gradient(circle at 42% 68%, rgba(16, 221, 242, 0.22), transparent 33%),
+        radial-gradient(circle at 58% 82%, rgba(255, 255, 255, 0.10), transparent 25%);
+      animation: steamLeft 12s ease-in-out infinite alternate;
+    }
+
+    .steam.right {
+      right: -12vw;
+      background:
+        radial-gradient(circle at 76% 76%, rgba(32, 242, 154, 0.42), transparent 30%),
+        radial-gradient(circle at 52% 68%, rgba(32, 242, 154, 0.22), transparent 33%),
+        radial-gradient(circle at 38% 82%, rgba(255, 255, 255, 0.08), transparent 25%);
+      animation: steamRight 13s ease-in-out infinite alternate;
+    }
+
+    .particles {
+      position: absolute;
+      inset: 0;
+      z-index: 7;
+      pointer-events: none;
+      overflow: hidden;
+    }
+
+    .particle {
+      position: absolute;
+      width: 3px;
+      height: 3px;
+      border-radius: 50%;
+      background: var(--cyan);
+      box-shadow: 0 0 12px currentColor;
+      opacity: 0;
+      animation: particleFloat var(--life, 7s) linear forwards;
+    }
+
+    .particle.green {
+      background: var(--green);
+    }
+
+    .timer-live {
+      position: absolute;
+      left: 50%;
+      top: 63.1%;
+      transform: translate(-50%, -50%);
+      z-index: 10;
+      min-width: 535px;
+      text-align: center;
+      font-size: clamp(72px, 8.2vw, 146px);
+      line-height: 0.9;
+      font-weight: 1000;
+      letter-spacing: -0.055em;
+      color: var(--green);
+      text-shadow:
+        0 0 10px rgba(32, 242, 154, 0.95),
+        0 0 28px rgba(16, 221, 242, 0.68),
+        0 0 66px rgba(32, 242, 154, 0.42);
+      filter: brightness(1.05);
+      animation: timerPulse 2s ease-in-out infinite alternate;
+      user-select: none;
+      cursor: pointer;
+    }
+
+    .timer-live.tick {
+      animation: timerTick 0.22s ease-out;
+    }
+
+    .timer-live.done {
+      color: #ffffff;
+      text-shadow:
+        0 0 12px rgba(255, 255, 255, 0.96),
+        0 0 34px rgba(32, 242, 154, 0.8),
+        0 0 80px rgba(16, 221, 242, 0.52);
+      animation: donePulse 0.8s ease-in-out infinite alternate;
+    }
+
+    .controls {
+      position: absolute;
+      top: 18px;
+      left: 18px;
+      z-index: 20;
+      display: flex;
+      gap: 8px;
+      padding: 10px;
+      border: 1px solid rgba(16, 221, 242, 0.35);
+      background: rgba(0, 10, 12, 0.58);
+      box-shadow:
+        0 0 18px rgba(16, 221, 242, 0.16),
+        inset 0 0 18px rgba(32, 242, 154, 0.08);
+      backdrop-filter: blur(8px);
+      opacity: 0.18;
+      transition: opacity 0.18s ease;
+    }
+
+    .controls:hover {
+      opacity: 1;
+    }
+
+    .controls button {
+      border: 1px solid rgba(32, 242, 154, 0.42);
+      background: rgba(3, 20, 22, 0.88);
+      color: rgba(255, 255, 255, 0.92);
+      font-weight: 900;
+      letter-spacing: 0.08em;
+      padding: 8px 10px;
+      cursor: pointer;
+      text-shadow: 0 0 8px rgba(16, 221, 242, 0.55);
+      box-shadow: inset 0 0 12px rgba(16, 221, 242, 0.06);
+    }
+
+    .controls button:hover {
+      color: #ffffff;
+      border-color: rgba(16, 221, 242, 0.85);
+      box-shadow:
+        0 0 16px rgba(16, 221, 242, 0.25),
+        inset 0 0 18px rgba(32, 242, 154, 0.12);
+    }
+
+    @keyframes bgBreath {
+      0% {
+        transform: scale(1.01);
+        filter: brightness(0.94) contrast(1.08) saturate(1.04);
+      }
+
+      100% {
+        transform: scale(1.018);
+        filter: brightness(1.05) contrast(1.12) saturate(1.12);
+      }
+    }
+
+    @keyframes glowPulse {
+      0% {
+        opacity: 0.4;
+      }
+
+      100% {
+        opacity: 0.72;
+      }
+    }
+
+    @keyframes scanMove {
+      0% {
+        transform: translateY(0);
+      }
+
+      100% {
+        transform: translateY(28px);
+      }
+    }
+
+    @keyframes neonSweep {
+      0%,
+      58% {
+        transform: translateX(-48%);
+        opacity: 0;
+      }
+
+      70% {
+        opacity: 0.75;
+      }
+
+      100% {
+        transform: translateX(48%);
+        opacity: 0;
+      }
+    }
+
+    @keyframes steamLeft {
+      0% {
+        transform: translate3d(0, 0, 0) scale(1);
+        opacity: 0.34;
+      }
+
+      100% {
+        transform: translate3d(9vw, -9vh, 0) scale(1.18);
+        opacity: 0.54;
+      }
+    }
+
+    @keyframes steamRight {
+      0% {
+        transform: translate3d(0, 0, 0) scale(1);
+        opacity: 0.34;
+      }
+
+      100% {
+        transform: translate3d(-8vw, -10vh, 0) scale(1.2);
+        opacity: 0.56;
+      }
+    }
+
+    @keyframes particleFloat {
+      0% {
+        transform: translate3d(0, 0, 0) scale(0.7);
+        opacity: 0;
+      }
+
+      14% {
+        opacity: 0.85;
+      }
+
+      100% {
+        transform: translate3d(var(--x), var(--y), 0) scale(1.1);
+        opacity: 0;
+      }
+    }
+
+    @keyframes timerPulse {
+      0% {
+        filter: brightness(0.96);
+      }
+
+      100% {
+        filter: brightness(1.18);
+      }
+    }
+
+    @keyframes timerTick {
+      0% {
+        transform: translate(-50%, -50%) scale(1);
+      }
+
+      48% {
+        transform: translate(-50%, -50%) scale(1.035);
+      }
+
+      100% {
+        transform: translate(-50%, -50%) scale(1);
+      }
+    }
+
+    @keyframes donePulse {
+      0% {
+        transform: translate(-50%, -50%) scale(1);
+        filter: brightness(1);
+      }
+
+      100% {
+        transform: translate(-50%, -50%) scale(1.035);
+        filter: brightness(1.35);
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <main class="scene">
+    <div class="bg"></div>
+    <div class="glow-pulse"></div>
+    <div class="neon-sweep"></div>
+    <div class="steam left"></div>
+    <div class="steam right"></div>
+    <div class="particles" id="particles"></div>
+    <div class="scanlines"></div>
+
+    <div class="timer-live" id="timer">05:00</div>
+
+    <div class="controls">
+      <button onclick="setTimer(5)">5 MIN</button>
+      <button onclick="setTimer(10)">10 MIN</button>
+      <button onclick="startTimer()">START</button>
+      <button onclick="pauseTimer()">PAUSE</button>
+      <button onclick="resetTimer()">RESET</button>
+    </div>
+  </main>
+
+  <script>
+    let defaultSeconds = 5 * 60;
+    let remainingSeconds = defaultSeconds;
+    let timerInterval = null;
+    let isRunning = false;
+
+    const timerEl = document.getElementById('timer');
+    const particlesEl = document.getElementById('particles');
+
+    function formatTime(totalSeconds) {
+      const minutes = Math.floor(totalSeconds / 60);
+      const seconds = totalSeconds % 60;
+
+      return `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+    }
+
+    function renderTimer(tick = false) {
+      timerEl.textContent = formatTime(remainingSeconds);
+
+      if (tick) {
+        timerEl.classList.remove('tick');
+        void timerEl.offsetWidth;
+        timerEl.classList.add('tick');
+      }
+
+      if (remainingSeconds <= 0) {
+        timerEl.classList.add('done');
+      } else {
+        timerEl.classList.remove('done');
+      }
+    }
+
+    function setTimer(minutes) {
+      defaultSeconds = minutes * 60;
+      remainingSeconds = defaultSeconds;
+      pauseTimer();
+      renderTimer(true);
+    }
+
+    function startTimer() {
+      if (isRunning) return;
+
+      isRunning = true;
+
+      timerInterval = setInterval(() => {
+        remainingSeconds = Math.max(0, remainingSeconds - 1);
+        renderTimer(true);
+
+        if (remainingSeconds <= 0) {
+          pauseTimer();
+        }
+      }, 1000);
+    }
+
+    function pauseTimer() {
+      isRunning = false;
+
+      if (timerInterval) {
+        clearInterval(timerInterval);
+        timerInterval = null;
+      }
+    }
+
+    function resetTimer() {
+      pauseTimer();
+      remainingSeconds = defaultSeconds;
+      renderTimer(true);
+    }
+
+    timerEl.addEventListener('click', () => {
+      if (isRunning) {
+        pauseTimer();
+      } else {
+        startTimer();
+      }
+    });
+
+    function spawnParticle() {
+      if (!particlesEl) return;
+
+      const particle = document.createElement('span');
+      particle.className = 'particle';
+
+      if (Math.random() > 0.5) {
+        particle.classList.add('green');
+      }
+
+      const startLeft = Math.random() * 100;
+      const startTop = 72 + Math.random() * 24;
+      const moveX = (Math.random() * 220 - 110).toFixed(0) + 'px';
+      const moveY = (-110 - Math.random() * 240).toFixed(0) + 'px';
+      const life = (5.5 + Math.random() * 5).toFixed(2) + 's';
+
+      particle.style.left = `${startLeft}%`;
+      particle.style.top = `${startTop}%`;
+      particle.style.setProperty('--x', moveX);
+      particle.style.setProperty('--y', moveY);
+      particle.style.setProperty('--life', life);
+
+      particlesEl.appendChild(particle);
+
+      setTimeout(() => {
+        particle.remove();
+      }, 11000);
+    }
+
+    setInterval(() => {
+      for (let i = 0; i < 3; i++) {
+        spawnParticle();
+      }
+    }, 420);
+
+    renderTimer(false);
+  </script>
+</body>
+</html>
